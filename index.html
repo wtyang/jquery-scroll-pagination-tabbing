@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery ScrollPagination</title>
+    <script>
+    var curtab = 0;
+    </script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="scripts/scrollpagination.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" media="screen" />
+    <meta name="author" content="Anderson Ferminiano" />
+    <meta name="keywords" content="jquery, plugin, anderson ferminiano, scroll, pagination, scroll pagination, html5" />
+    <style>
+
+    .loading{
+        display: none;
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        var options = [{
+            'element': '#content',
+            'contentPage': 'democontent.html', // the url you are fetching the results
+            'contentData': {}, // these are the variables you can pass to the request, for example: children().size() to know which page you are
+            'heightOffset': 100, // it gonna request when scroll is 10 pixels before the page ends
+            'beforeLoad': function() { // before load function, you can display a preloader div
+                $('#loading').fadeIn();
+            },
+            'afterLoad': function(elementsLoaded) { // after loading content, you can use this function to animate your new elements
+                $('#loading').fadeOut();
+                $(elementsLoaded).fadeInWithDelay();
+                if ($('#content').children().size() > 100) { // if more than 100 results already loaded, then stop pagination (only for testing)
+                    $('#nomoreresults').fadeIn();
+                    $('#content').stopScrollPagination();
+                }
+            }
+        }, {
+            'element': '#content1',
+            'contentPage': 'democontent1.html', // the url you are fetching the results
+            'contentData': {}, // these are the variables you can pass to the request, for example: children().size() to know which page you are
+            'heightOffset': 100, // it gonna request when scroll is 10 pixels before the page ends
+            'beforeLoad': function() { // before load function, you can display a preloader div
+                $('#loading1').fadeIn();
+            },
+            'afterLoad': function(elementsLoaded) { // after loading content, you can use this function to animate your new elements
+                $('#loading1').fadeOut();
+                $(elementsLoaded).fadeInWithDelay();
+                if ($('#content1').children().size() > 100) { // if more than 100 results already loaded, then stop pagination (only for testing)
+                    $('#nomoreresults1').fadeIn();
+                    $('#content1').stopScrollPagination();
+                }
+            }
+        }];
+        var target = $(window);
+        $(".nav-tabs li").click(function() {
+            curtab = $(this).index();
+            setTimeout(function(){
+                $.fn.scrollPagination.loadContent(target, $(options[curtab].element), options[curtab]);
+            },0)
+        })
+        $(window).scrollPagination({
+            'scrollTarget': target, // who gonna scroll? in this example, the full window
+            'options': options
+        });
+
+
+
+        // code for fade in element by element
+        $.fn.fadeInWithDelay = function() {
+            var delay = 0;
+            return this.each(function() {
+                $(this).delay(delay).animate({
+                    opacity: 1
+                }, 200);
+                delay += 100;
+            });
+        };
+
+    });
+    </script>
+</head>
+
+<body>
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#Content" aria-controls="Content" role="tab" data-toggle="tab">Content</a></li>
+            <li role="presentation"><a href="#Content1" aria-controls="Content1" role="tab" data-toggle="tab">Content1</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="Content">
+                <div id="scrollpaginationdemo">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1> 原项目 <a href="http://furgala.org/">jQuery ScrollPagination</a></h1>
+                        </div>
+                        <div class="panel-body">
+                            <ul id="content" class="list-group">
+                                <li class="list-group-item">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum elementum felis. Quisque porta turpis nec eros consectetur lacinia. Pellentesque sagittis adipiscing egestas. </p>
+                                </li>
+                                <li class="list-group-item">
+                                    <p>Aliquam dapibus tincidunt odio. Phasellus volutpat dui nec ante volutpat euismod. </p>
+                                </li>
+                                <li class="list-group-item">
+                                    <p>Phasellus vehicula turpis nec dui facilisis eget condimentum risus ullamcorper. Nunc imperdiet, tortor ultrices aliquam eleifend, nisl turpis venenatis dui, at vestibulum magna tellus in tortor. </p>
+                                </li>
+                                <li class="list-group-item">
+                                    <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris tincidunt nisi in tortor tincidunt ut ullamcorper lectus dapibus. </p>
+                                </li>
+                                <li class="list-group-item">
+                                    <p>Aenean interdum dui vitae purus molestie nec placerat nibh semper. Maecenas ultrices elementum dapibus. Aenean feugiat, metus in mattis mattis, justo nisi dignissim libero, ac volutpat dui nibh quis metus.</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <p> Morbi eget tristique dui. Vivamus nec turpis eu nisi euismod accumsan sed in tortor. Maecenas laoreet leo ut tortor viverra facilisis.</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="loading" id="loading">Wait a moment... it's loading!</div>
+                            <div class="loading" id="nomoreresults">Sorry, no more results for your pagination demo.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane " id="Content1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1> 原项目 <a href="http://furgala.org/">jQuery ScrollPagination</a></h1>
+                    </div>
+                    <div class="panel-body">
+                        <ul id="content1" class="list-group">
+                            <li class="list-group-item">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc elementum elementum felis. Quisque porta turpis nec eros consectetur lacinia. Pellentesque sagittis adipiscing egestas. </p>
+                            </li>
+                            <li class="list-group-item">
+                                <p>Aliquam dapibus tincidunt odio. Phasellus volutpat dui nec ante volutpat euismod. </p>
+                            </li>
+                            <li class="list-group-item">
+                                <p>Phasellus vehicula turpis nec dui facilisis eget condimentum risus ullamcorper. Nunc imperdiet, tortor ultrices aliquam eleifend, nisl turpis venenatis dui, at vestibulum magna tellus in tortor. </p>
+                            </li>
+                            <li class="list-group-item">
+                                <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris tincidunt nisi in tortor tincidunt ut ullamcorper lectus dapibus. </p>
+                            </li>
+                            <li class="list-group-item">
+                                <p>Aenean interdum dui vitae purus molestie nec placerat nibh semper. Maecenas ultrices elementum dapibus. Aenean feugiat, metus in mattis mattis, justo nisi dignissim libero, ac volutpat dui nibh quis metus.</p>
+                            </li>
+                            <li class="list-group-item">
+                                <p> Morbi eget tristique dui. Vivamus nec turpis eu nisi euismod accumsan sed in tortor. Maecenas laoreet leo ut tortor viverra facilisis.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="loading" id="loading1">Wait a moment... it's loading!</div>
+                        <div class="loading" id="nomoreresults1">Sorry, no more results for your pagination demo.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
